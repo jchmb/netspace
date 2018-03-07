@@ -7,7 +7,7 @@ import nl.jchmb.netspace.entity.Entity;
 
 public interface EntityManager {
 	public Optional<Entity> findByID(final Entity.ID id);
-	public Stream<Entity> entities();
+	public Stream<Entity> stream();
 	public void addEntity(final Entity entity);
 	public void removeEntity(final Entity entity);
 }

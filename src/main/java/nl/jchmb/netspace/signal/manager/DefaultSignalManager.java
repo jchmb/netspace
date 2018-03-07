@@ -3,7 +3,7 @@ package nl.jchmb.netspace.signal.manager;
 import java.util.HashMap;
 import java.util.Map;
 
-import nl.jchmb.netcode.signal.SignalListener;
+import nl.jchmb.netspace.signal.SignalListener;
 
 public class DefaultSignalManager implements SignalManager {
 	private final Map<Class<?>, SignalListener<?>> listeners;
