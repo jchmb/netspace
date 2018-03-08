@@ -1,38 +1,40 @@
 package nl.jchmb.netspace.signal.manager;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import nl.jchmb.netspace.signal.SignalListener;
 
 public class DefaultSignalManager implements SignalManager {
-	private final Map<Class<?>, SignalListener<?>> listeners;
+	private final Map<Class<?>, List<SignalListener<?>>> listeners;
 	
 	public DefaultSignalManager() {
 		this.listeners = new HashMap<>();
 	}
+	
+	private final List<SignalListener<?>> getListeners(final Class<?> clazz) {
+		return this.listeners.computeIfAbsent(
+			clazz,
+			x -> new ArrayList<>()
+		);
+	}
 
 	@Override
 	public final <T> void addListener(final SignalListener<T> listener) {
-		this.listeners.put(listener.getSignalClass(), listener);
+		this.getListeners(listener.getSignalClass()).add(listener);
 	}
 
 	@Override
-	public final <T> void removeListener(final Class<T> listenerClass) {
-		this.listeners.remove(listenerClass);
+	public final <T> void removeListener(final SignalListener<T> listener) {
+		this.getListeners(listener.getSignalClass()).remove(listener);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public final <T> void fire(final T signal) {
-		final SignalListener<T> listener = (SignalListener<T>) getListener(signal.getClass());
-		if (listener != null) {
-			listener.receive(signal);
-		}
-	}
-
-	@SuppressWarnings("unchecked")
-	private final <T> SignalListener<T> getListener(final Class<T> signalClass) {
-		return (SignalListener<T>) listeners.get(signalClass);
+	public final void fire(final Object signal) {
+		this.getListeners(signal.getClass()).stream()
+			.filter(listener -> listener.getSignalClass().isInstance(signal))
+			.forEach(listener -> listener.receive(signal));
 	}
 }

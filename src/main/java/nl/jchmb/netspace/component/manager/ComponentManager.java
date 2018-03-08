@@ -10,4 +10,5 @@ public interface ComponentManager {
 	public <T extends Component> ComponentManager detach(final Class<T> clazz);
 	public <T extends Component> void ifPresent(final Class<T> clazz, final Consumer<T> consumer);
 	public Stream<? extends Component> stream();
+	public <T extends Component> T get(final Class<T> clazz);
 }

@@ -1,8 +1,11 @@
 package nl.jchmb.netspace.signal;
 
-import java.util.function.Consumer;
-
-public interface SignalListener {
-	public boolean accept(final Object signal);
-	public void receive(final Object signal);
+public interface SignalListener<T> {
+	public Class<T> getSignalClass();
+	
+	public default void receive(final Object signal) {
+		this.onReceive(this.getSignalClass().cast(signal));
+	}
+	
+	public void onReceive(final T signal);
 }

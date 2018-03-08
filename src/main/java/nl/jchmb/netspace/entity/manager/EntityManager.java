@@ -10,4 +10,5 @@ public interface EntityManager {
 	public Stream<Entity> stream();
 	public void addEntity(final Entity entity);
 	public void removeEntity(final Entity entity);
+	public void onUpdate(final float dt);
 }

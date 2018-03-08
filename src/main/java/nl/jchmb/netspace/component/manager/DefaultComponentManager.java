@@ -15,12 +15,16 @@ public class DefaultComponentManager implements ComponentManager {
 	private final Entity entity;
 	private final Map<Class<? extends Component>, Component> components;
 	
-	public DefaultComponentManager(final Entity entity) {
+	public DefaultComponentManager(
+			final Entity entity
+	) {
 		this.components = new HashMap<>();
 		this.entity = entity;
 	}
 	
-	private final <T extends Component> Optional<T> optional(final Class<T> clazz) {
+	private final <T extends Component> Optional<T> optional(
+			final Class<T> clazz
+	) {
 		return Optional.ofNullable(
 			this.components.containsKey(clazz) ?
 				clazz.cast(this.components.get(clazz)) :
@@ -29,7 +33,9 @@ public class DefaultComponentManager implements ComponentManager {
 	}
 	
 	@Override
-	public final <T extends Component> ComponentManager attach(final T component) {
+	public final <T extends Component> ComponentManager attach(
+			final T component
+	) {
 		if (this.optional(component.getClass()).isPresent()) {
 			throw new DuplicateComponentException();
 		}
@@ -39,7 +45,9 @@ public class DefaultComponentManager implements ComponentManager {
 	}
 
 	@Override
-	public final <T extends Component> ComponentManager detach(final Class<T> clazz) {
+	public final <T extends Component> ComponentManager detach(
+			final Class<T> clazz
+	) {
 		if (!this.optional(clazz).isPresent()) {
 			throw new ComponentNotFoundException();
 		}
@@ -49,13 +57,21 @@ public class DefaultComponentManager implements ComponentManager {
 	}
 
 	@Override
-	public final <T extends Component> void ifPresent(final Class<T> clazz, final Consumer<T> consumer) {
+	public final <T extends Component> void ifPresent(
+			final Class<T> clazz,
+			final Consumer<T> consumer
+	) {
 		this.optional(clazz).ifPresent(consumer);
 	}
 
 	@Override
 	public final Stream<? extends Component> stream() {
 		return this.components.values().stream();
+	}
+
+	@Override
+	public final <T extends Component> T get(final Class<T> clazz) {
+		return this.optional(clazz).get();
 	}
 
 }
