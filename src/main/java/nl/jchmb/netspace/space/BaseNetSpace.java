@@ -1,7 +1,5 @@
 package nl.jchmb.netspace.space;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.function.Consumer;
 
 import com.esotericsoftware.kryonet.Connection;
@@ -14,27 +12,9 @@ import nl.jchmb.netspace.entity.manager.EntityManager;
 public abstract class BaseNetSpace implements NetSpace {
 	private final EndPoint endPoint;
 	private final EntityManager entities = new DefaultEntityManager();
-	protected final Map<Class<?>, Consumer<?>> listeners = new HashMap<>();
 			
 	public BaseNetSpace(final EndPoint endPoint) {
 		this.endPoint = endPoint;
-		this.endPoint.addListener(
-			new Listener() {
-				@Override
-				public void received(final Connection connection, final Object object) {
-					this.receivedTyped(connection, object);
-				}
-				
-				@SuppressWarnings("unchecked")
-				private <T> void receivedTyped(final Connection connection, final T object) {
-					final Class<T> clazz = (Class<T>) object.getClass();
-					final Consumer<T> consumer = (Consumer<T>) BaseNetSpace.this.listeners.get(clazz);
-					if (consumer != null) {
-						consumer.accept(object);
-					}
-				}
-			}
-		);
 	}
 	
 	@Override
@@ -42,11 +22,16 @@ public abstract class BaseNetSpace implements NetSpace {
 		return this.entities;
 	}
 	
-	protected <T> void addListener(
-			final Class<T> clazz,
-			final Consumer<T> consumer
+	protected void addListener(
+			final Consumer<Object> listener
 	) {
-		this.listeners.put(clazz, consumer);
+		this.endPoint.addListener(
+			new Listener() {
+				@Override
+				public final void received(final Connection connection, final Object object) {
+					listener.accept(object);
+				}
+			}
+		);
 	}
-	
 }
