@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 
 import nl.jchmb.netspace.message.EntityDestroyMessage;
 import nl.jchmb.netspace.message.EntitySpawnMessage;
+import nl.jchmb.netspace.message.EntityUpdateMessage;
 
 public abstract class Network {
 	protected final Kryo kryo;

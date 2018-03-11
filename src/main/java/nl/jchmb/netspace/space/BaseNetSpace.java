@@ -23,15 +23,8 @@ public abstract class BaseNetSpace implements NetSpace {
 	}
 	
 	protected void addListener(
-			final Consumer<Object> listener
+			final Listener listener
 	) {
-		this.endPoint.addListener(
-			new Listener() {
-				@Override
-				public final void received(final Connection connection, final Object object) {
-					listener.accept(object);
-				}
-			}
-		);
+		this.endPoint.addListener(listener);
 	}
 }
