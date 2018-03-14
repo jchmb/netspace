@@ -4,4 +4,6 @@ import nl.jchmb.netspace.entity.manager.EntityManager;
 
 public interface NetSpace {
 	public EntityManager entities();
+	public boolean isServer();
+	public boolean isClient();
 }

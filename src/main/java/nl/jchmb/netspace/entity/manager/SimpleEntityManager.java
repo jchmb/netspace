@@ -7,11 +7,17 @@ import java.util.stream.Stream;
 
 import nl.jchmb.netspace.entity.Entity;
 import nl.jchmb.netspace.entity.Entity.ID;
+import nl.jchmb.netspace.space.NetSpace;
 
 public class SimpleEntityManager implements EntityManager {
+	private final NetSpace space;
 	private final List<Entity> entities = new ArrayList<>();
 	private final List<Entity> entitiesToAdd = new ArrayList<>();
 	private final List<Entity> entitiesToRemove = new ArrayList<>();
+	
+	public SimpleEntityManager(final NetSpace space) {
+		this.space = space;
+	}
 	
 	@Override
 	public Optional<Entity> findByID(final ID id) {
@@ -21,6 +27,10 @@ public class SimpleEntityManager implements EntityManager {
 				entity -> entity.getID().equals(id)
 			)
 			.findAny();
+	}
+	
+	public NetSpace getSpace() {
+		return this.space;
 	}
 
 	@Override

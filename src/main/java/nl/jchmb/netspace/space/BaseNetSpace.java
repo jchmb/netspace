@@ -1,8 +1,5 @@
 package nl.jchmb.netspace.space;
 
-import java.util.function.Consumer;
-
-import com.esotericsoftware.kryonet.Connection;
 import com.esotericsoftware.kryonet.EndPoint;
 import com.esotericsoftware.kryonet.Listener;
 
@@ -11,7 +8,7 @@ import nl.jchmb.netspace.entity.manager.EntityManager;
 
 public abstract class BaseNetSpace implements NetSpace {
 	private final EndPoint endPoint;
-	private final EntityManager entities = new SimpleEntityManager();
+	private final EntityManager entities = new SimpleEntityManager(this);
 			
 	public BaseNetSpace(final EndPoint endPoint) {
 		this.endPoint = endPoint;
