@@ -2,13 +2,19 @@ package nl.jchmb.netspace.space;
 
 import com.esotericsoftware.kryonet.Client;
 
+import nl.jchmb.netspace.entity.manager.factory.EntityManagerFactory;
 import nl.jchmb.netspace.message.receiver.EntityDestroyMessageReceiver;
 import nl.jchmb.netspace.message.receiver.EntitySpawnMessageReceiver;
 import nl.jchmb.netspace.message.receiver.EntityUpdateMessageReceiver;
+import nl.jchmb.netspace.message.registry.factory.MessageRegistryFactory;
 
 public class ClientNetSpace extends BaseNetSpace {
-	public ClientNetSpace(final Client client) {
-		super(client);
+	public ClientNetSpace(
+			final Client client,
+			final EntityManagerFactory entityManagerFactory,
+			final MessageRegistryFactory messageRegistryFactory
+	) {
+		super(client, entityManagerFactory, messageRegistryFactory);
 		
 		this.addListener(
 			new EntitySpawnMessageReceiver(this.entities())
@@ -22,12 +28,12 @@ public class ClientNetSpace extends BaseNetSpace {
 	}
 
 	@Override
-	public boolean isServer() {
+	public final boolean isServer() {
 		return false;
 	}
 
 	@Override
-	public boolean isClient() {
+	public final boolean isClient() {
 		return true;
 	}
 }

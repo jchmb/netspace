@@ -5,11 +5,11 @@ import nl.jchmb.netspace.entity.Entity;
 
 public abstract class BaseComponent implements Component {
 	private Entity entity;
-	
+
 	public BaseComponent() {
 		this.entity = null;
 	}
-	
+
 	@Override
 	public final Entity getEntity() {
 		if (this.entity == null) {
@@ -35,5 +35,5 @@ public abstract class BaseComponent implements Component {
 	@Override
 	public void onDestroy() {}
 
-	
+
 }
