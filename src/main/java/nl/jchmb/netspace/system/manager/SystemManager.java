@@ -18,7 +18,6 @@ public interface SystemManager {
 	public Stream<System> stream();
 	
 	public void onUpdate(
-			final NetSpace space,
 			final double dt
 	);
 }

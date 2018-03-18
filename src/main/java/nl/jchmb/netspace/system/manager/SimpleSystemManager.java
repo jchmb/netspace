@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-import nl.jchmb.netspace.entity.manager.EntityManager;
 import nl.jchmb.netspace.space.NetSpace;
 import nl.jchmb.netspace.system.System;
 
 public class SimpleSystemManager implements SystemManager {
+	private final NetSpace space;
 	private final List<System> systems = new ArrayList<>();
+	
+	public SimpleSystemManager(final NetSpace space) {
+		this.space = space;
+	}
 	
 	@Override
 	public final void addSystem(final System system) {
@@ -28,11 +32,10 @@ public class SimpleSystemManager implements SystemManager {
 
 	@Override
 	public void onUpdate(
-			final NetSpace space,
 			final double dt
 	) {
 		this.systems.forEach(
-			system -> space.entities().stream()
+			system -> system.getEntityStream(this.space)
 				.forEach(
 					entity -> system.onUpdate(entity, dt)
 				)

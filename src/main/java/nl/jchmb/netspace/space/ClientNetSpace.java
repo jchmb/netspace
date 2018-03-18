@@ -7,14 +7,21 @@ import nl.jchmb.netspace.message.receiver.EntityDestroyMessageReceiver;
 import nl.jchmb.netspace.message.receiver.EntitySpawnMessageReceiver;
 import nl.jchmb.netspace.message.receiver.EntityUpdateMessageReceiver;
 import nl.jchmb.netspace.message.registry.factory.MessageRegistryFactory;
+import nl.jchmb.netspace.system.manager.factory.SystemManagerFactory;
 
 public class ClientNetSpace extends BaseNetSpace {
 	public ClientNetSpace(
 			final Client client,
 			final EntityManagerFactory entityManagerFactory,
+			final SystemManagerFactory systemManagerFactory,
 			final MessageRegistryFactory messageRegistryFactory
 	) {
-		super(client, entityManagerFactory, messageRegistryFactory);
+		super(
+			client,
+			entityManagerFactory,
+			systemManagerFactory,
+			messageRegistryFactory
+		);
 		
 		this.addListener(
 			new EntitySpawnMessageReceiver(this.entities())
