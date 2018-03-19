@@ -26,9 +26,10 @@ Features
 Dependencies
 ------------
 
-NetSpace depends heavily on [KryoNet](https://github.com/EsotericSoftware/kryonet), which is responsible for the networking and serialization of objects.
+* JDK 8.
+* NetSpace depends heavily on [KryoNet](https://github.com/EsotericSoftware/kryonet), which is responsible for the networking and serialization of objects.
 
-Suggestions
------------
+Examples
+--------
 
-To further aid development, it is suggested to use [LibGDX](https://libgdx.badlogicgames.com/) together with NetSpace.
+* An example of NetSpace with LibGDX can be found here: https://github.com/jchmb/netspace-example-libgdx
