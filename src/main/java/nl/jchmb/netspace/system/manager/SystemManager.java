@@ -7,11 +7,11 @@ import nl.jchmb.netspace.space.NetSpace;
 import nl.jchmb.netspace.system.System;
 
 public interface SystemManager {
-	public void addSystem(
+	public void add(
 			final System system
 	);
 	
-	public void removeSystem(
+	public void remove(
 			final System system
 	);
 	

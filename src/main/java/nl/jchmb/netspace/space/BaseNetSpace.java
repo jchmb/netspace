@@ -43,6 +43,11 @@ public abstract class BaseNetSpace implements NetSpace {
 		return this.systems;
 	}
 	
+	@Override
+	public final void onUpdate(final double dt) {
+		this.systems.onUpdate(dt);
+	}
+	
 	protected final void addListener(
 			final Listener listener
 	) {

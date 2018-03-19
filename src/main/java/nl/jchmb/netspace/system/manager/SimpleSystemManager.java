@@ -16,12 +16,12 @@ public class SimpleSystemManager implements SystemManager {
 	}
 	
 	@Override
-	public final void addSystem(final System system) {
+	public final void add(final System system) {
 		this.systems.add(system);
 	}
 
 	@Override
-	public final void removeSystem(final System system) {
+	public final void remove(final System system) {
 		this.systems.remove(system);
 	}
 

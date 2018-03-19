@@ -10,4 +10,5 @@ public interface NetSpace {
 	public MessageRegistry messages();
 	public boolean isServer();
 	public boolean isClient();
+	public void onUpdate(final double dt);
 }

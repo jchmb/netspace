@@ -49,7 +49,7 @@ public class SimpleEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void onUpdate(final float dt) {
+	public void onUpdate(final double dt) {
 		this.entities.addAll(this.entitiesToAdd);
 		this.entitiesToAdd.forEach(Entity::onSpawn);
 		this.entities.removeAll(this.entitiesToRemove);
