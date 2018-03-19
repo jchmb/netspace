@@ -4,7 +4,7 @@ NetSpace
 Notice
 ------
 
-NetSpace is still in early stages of development and therefore the API may change dramatically. Use at your own risk.
+NetSpace is still in the early stages of development and therefore the API may change dramatically. Use at your own risk.
 
 What is NetSpace?
 -----------------
