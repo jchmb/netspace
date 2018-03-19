@@ -15,6 +15,14 @@ Any client/server network can create private entities (not shared with others) a
 
 Like in any other entity-component-system framework, entities have components that may be attached and detached. The behavior of entities is completely determined by its components. In this framework, some components may be server-only (e.g., keeping track of hidden scores/stats), while other components may be client-only (e.g., related to the UI).
 
+Features
+--------
+
+* Easily create and share entities with everyone on a network.
+* Define behavior through pluggable **components**.
+* Entities have internal events, called **signals**, so that components can communicate with each other.
+* NetSpace is completely agnostic about any underlying rendering system. Even something basic like position has been left out, so that the user is not forced to use any specific system.
+
 Dependencies
 ------------
 
