@@ -9,14 +9,13 @@ import com.esotericsoftware.kryonet.Server;
 
 import nl.jchmb.netspace.entity.manager.factory.EntityManagerFactory;
 import nl.jchmb.netspace.message.registry.factory.MessageRegistryFactory;
-import nl.jchmb.netspace.network.ConnectionPredicate;
 import nl.jchmb.netspace.network.Connector;
 import nl.jchmb.netspace.network.ServerFactory;
 import nl.jchmb.netspace.system.manager.factory.SystemManagerFactory;
 
-public class ServerNetSpace<C extends Connection, T extends Server> extends BaseNetSpace {
+public class ServerNetSpace<T extends Connection> extends BaseNetSpace {
 	public ServerNetSpace(
-			final ServerFactory<T> serverFactory,
+			final ServerFactory serverFactory,
 			final EntityManagerFactory entityManagerFactory,
 			final SystemManagerFactory systemManagerFactory,
 			final MessageRegistryFactory messageRegistryFactory
@@ -52,26 +51,38 @@ public class ServerNetSpace<C extends Connection, T extends Server> extends Base
 	}
 	
 	@SuppressWarnings("unchecked")
-	private final Stream<C> getConnectionStream(final ConnectionPredicate<C, T> connectionPredicate) {
+	private final Stream<T> getConnectionStream(final Predicate<T> predicate) {
 		final Server server = (Server) this.getEndPoint();
 		return Stream.of(server.getConnections())
-			.map(c -> (C) c)
-			.filter(c -> connectionPredicate.evaluate(c, this));
+			.map(c -> (T) c)
+			.filter(predicate);
 	}
 	
 	public final <M> void sendTCP(
 			final M message,
-			final ConnectionPredicate<C, T> connectionPredicate
+			final Predicate<T> predicate
 	) {
-		this.getConnectionStream(connectionPredicate)
+		this.getConnectionStream(predicate)
 			.forEach(c -> c.sendTCP(message));
+	}
+	
+	public final <M> void sendTCP(
+			final M message
+	) {
+		this.sendTCP(message, c -> true);
 	}
 	
 	public final <M> void sendUDP(
 			final M message,
-			final ConnectionPredicate<C, T> connectionPredicate
+			final Predicate<T> predicate
 	) {
-		this.getConnectionStream(connectionPredicate)
+		this.getConnectionStream(predicate)
 			.forEach(c -> c.sendUDP(message));
+	}
+	
+	public final <M> void sendUDP(
+			final M message
+	) {
+		this.sendUDP(message, c -> true);
 	}
 }

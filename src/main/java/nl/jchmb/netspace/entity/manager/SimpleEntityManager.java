@@ -9,7 +9,10 @@ import com.esotericsoftware.kryonet.Server;
 
 import nl.jchmb.netspace.entity.Entity;
 import nl.jchmb.netspace.entity.Entity.ID;
+import nl.jchmb.netspace.message.EntityDestroyMessage;
+import nl.jchmb.netspace.message.EntitySpawnMessage;
 import nl.jchmb.netspace.space.NetSpace;
+import nl.jchmb.netspace.space.ServerNetSpace;
 
 public class SimpleEntityManager implements EntityManager {
 	private final NetSpace space;
@@ -85,11 +88,18 @@ public class SimpleEntityManager implements EntityManager {
 	}
 	
 	private final void sendCreateMessage(final Entity entity) {
-		
+		final ServerNetSpace<?> space = (ServerNetSpace<?>) this.space;
+		final EntitySpawnMessage msg = new EntitySpawnMessage();
+		msg.id = entity.getID();
+		msg.entityClass = entity.getClass();
+		space.sendTCP(msg);
 	}
 	
 	private final void sendDestroyMessage(final Entity entity) {
-		
+		final ServerNetSpace<?> space = (ServerNetSpace<?>) this.space;
+		final EntityDestroyMessage msg = new EntityDestroyMessage();
+		msg.id = entity.getID();
+		space.sendTCP(msg);
 	}
 
 	
