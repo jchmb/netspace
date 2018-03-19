@@ -26,7 +26,7 @@ public class EntityDestroyMessageReceiver extends Receiver<EntityDestroyMessage>
 	) {
 		this.entities.findByID(msg.id)
 			.ifPresent(
-				entity -> this.entities.removeEntity(entity)
+				entity -> this.entities.remove(entity)
 			);
 	}
 	

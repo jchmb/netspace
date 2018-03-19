@@ -5,15 +5,13 @@ import nl.jchmb.netspace.component.manager.ComponentManager;
 import nl.jchmb.netspace.component.manager.DefaultComponentManager;
 import nl.jchmb.netspace.signal.manager.DefaultSignalManager;
 import nl.jchmb.netspace.signal.manager.SignalManager;
+import nl.jchmb.netspace.space.NetSpace;
 
 public class BaseEntity implements Entity {
-	private final ID id;
+	private ID id;
+	private NetSpace space;
 	protected final ComponentManager components = new DefaultComponentManager(this);
 	protected final SignalManager signals = new DefaultSignalManager();
-	
-	protected BaseEntity(final ID id) {
-		this.id = id;
-	}
 	
 	@Override
 	public final ComponentManager components() {
@@ -40,6 +38,21 @@ public class BaseEntity implements Entity {
 	@Override
 	public final SignalManager signals() {
 		return this.signals;
+	}
+
+	@Override
+	public final void setID(ID id) {
+		this.id = id;
+	}
+
+	@Override
+	public final NetSpace getSpace() {
+		return this.space;
+	}
+
+	@Override
+	public final void setSpace(final NetSpace space) {
+		this.space = space;
 	}
 
 }

@@ -30,7 +30,7 @@ public class EntitySpawnMessageReceiver extends Receiver<EntitySpawnMessage> {
 						.newInstance(
 							msg.id
 						);
-					this.entities.addEntity(entity);
+					this.entities.add(entity);
 				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
 						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
 					e.printStackTrace();
