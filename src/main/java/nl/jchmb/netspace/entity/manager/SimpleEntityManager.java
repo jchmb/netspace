@@ -5,10 +5,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import com.esotericsoftware.kryonet.Server;
-
 import nl.jchmb.netspace.entity.Entity;
 import nl.jchmb.netspace.entity.Entity.ID;
+import nl.jchmb.netspace.entity.factory.EntityFactory;
 import nl.jchmb.netspace.message.EntityDestroyMessage;
 import nl.jchmb.netspace.message.EntitySpawnMessage;
 import nl.jchmb.netspace.space.NetSpace;
@@ -16,14 +15,19 @@ import nl.jchmb.netspace.space.ServerNetSpace;
 
 public class SimpleEntityManager implements EntityManager {
 	private final NetSpace space;
+	private final EntityFactory factory;
 	private final List<Entity> entities = new ArrayList<>();
-	private final List<Entity> entitiesToAdd = new ArrayList<>();
+	private final List<EntityTypePair> entitiesToAdd = new ArrayList<>();
 	private final List<Entity> entitiesToRemove = new ArrayList<>();
 	private ID currentIndex = new ID(1);
 	private ID currentPrivateIndex = new ID(-1);
 	
-	public SimpleEntityManager(final NetSpace space) {
+	public SimpleEntityManager(
+			final NetSpace space,
+			final EntityFactory factory
+	) {
 		this.space = space;
+		this.factory = factory;
 	}
 	
 	@Override
@@ -46,8 +50,15 @@ public class SimpleEntityManager implements EntityManager {
 	}
 
 	@Override
-	public void add(final Entity entity) {
-		this.entitiesToAdd.add(entity);
+	public Entity spawn(final Entity.Type type) {
+		final Entity entity = this.factory.create(type);
+		this.entitiesToAdd.add(
+			new EntityTypePair(
+				entity,
+				type
+			)
+		);
+		return entity;
 	}
 
 	@Override
@@ -57,20 +68,22 @@ public class SimpleEntityManager implements EntityManager {
 
 	@Override
 	public void onUpdate(final double dt) {
-		this.entities.addAll(this.entitiesToAdd);
-		this.entitiesToAdd.forEach(
-			entity -> {
-				if (entity.isPrivate()) {
-					entity.setID(this.currentPrivateIndex);
-					this.currentPrivateIndex = this.currentPrivateIndex.next();
-				} else if (this.space.isServer()) {
-					entity.setID(this.currentIndex);
-					this.currentIndex = this.currentIndex.next();
-					this.sendCreateMessage(entity);
+		this.entitiesToAdd.stream()
+			.forEach(
+				pair -> {
+					final Entity.Type type = pair.type;
+					final Entity entity = pair.entity;
+					if (entity.isPrivate()) {
+						entity.setID(this.currentPrivateIndex);
+						this.currentPrivateIndex = this.currentPrivateIndex.next();
+					} else if (this.space.isServer()) {
+						entity.setID(this.currentIndex);
+						this.currentIndex = this.currentIndex.next();
+						this.sendCreateMessage(currentIndex, type);
+					}
+					entity.setSpace(this.space);
+					entity.onSpawn();
 				}
-				entity.setSpace(this.space);
-				entity.onSpawn();
-			}
 		);
 		this.entities.removeAll(this.entitiesToRemove);
 		this.entitiesToRemove.forEach(
@@ -87,11 +100,11 @@ public class SimpleEntityManager implements EntityManager {
 		this.entitiesToRemove.clear();
 	}
 	
-	private final void sendCreateMessage(final Entity entity) {
+	private final void sendCreateMessage(final Entity.ID id, final Entity.Type type) {
 		final ServerNetSpace<?> space = (ServerNetSpace<?>) this.space;
 		final EntitySpawnMessage msg = new EntitySpawnMessage();
-		msg.id = entity.getID();
-		msg.entityClass = entity.getClass();
+		msg.id = id;
+		msg.type = type;
 		space.sendTCP(msg);
 	}
 	
@@ -102,5 +115,20 @@ public class SimpleEntityManager implements EntityManager {
 		space.sendTCP(msg);
 	}
 
-	
+	@Override
+	public final Entity spawn(final String entityType) {
+		return this.spawn(
+			this.factory.getTypeIndex(entityType)
+		);
+	}
+
+	private static final class EntityTypePair {
+		public final Entity entity;
+		public final Entity.Type type;
+		
+		public EntityTypePair(final Entity entity, final Entity.Type type) {
+			this.entity = entity;
+			this.type = type;
+		}
+	}
 }

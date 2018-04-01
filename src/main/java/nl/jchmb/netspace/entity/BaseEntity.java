@@ -10,6 +10,7 @@ import nl.jchmb.netspace.space.NetSpace;
 public class BaseEntity implements Entity {
 	private ID id;
 	private NetSpace space;
+	private boolean isPrivate = false;
 	protected final ComponentManager components = new DefaultComponentManager(this);
 	protected final SignalManager signals = new DefaultSignalManager();
 	
@@ -19,7 +20,7 @@ public class BaseEntity implements Entity {
 	}
 
 	@Override
-	public final void onSpawn() {
+	public void onSpawn() {
 		this.components.stream()
 			.forEach(Component::onSpawn);
 	}
@@ -55,4 +56,12 @@ public class BaseEntity implements Entity {
 		this.space = space;
 	}
 
+	@Override
+	public final boolean isPrivate() {
+		return this.isPrivate;
+	}
+
+	protected final void setPrivate() {
+		this.isPrivate = true;
+	}
 }

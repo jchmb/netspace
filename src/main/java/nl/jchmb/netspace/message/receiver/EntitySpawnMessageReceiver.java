@@ -22,19 +22,8 @@ public class EntitySpawnMessageReceiver extends Receiver<EntitySpawnMessage> {
 			final Connection connection,
 			final EntitySpawnMessage msg
 	) {
-			try {
-					final Entity entity = msg.entityClass
-						.getConstructor(
-							Entity.ID.class
-						)
-						.newInstance(
-							msg.id
-						);
-					this.entities.add(entity);
-				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException
-						| InvocationTargetException | NoSuchMethodException | SecurityException e) {
-					e.printStackTrace();
-			}
+		final Entity entity = this.entities.spawn(msg.type);
+		entity.setID(msg.id);
 	}
 
 	@Override

@@ -45,6 +45,7 @@ public abstract class BaseNetSpace implements NetSpace {
 	
 	@Override
 	public final void onUpdate(final double dt) {
+		this.entities.onUpdate(dt);
 		this.systems.onUpdate(dt);
 	}
 	
