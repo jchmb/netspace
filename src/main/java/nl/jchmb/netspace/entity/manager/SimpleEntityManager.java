@@ -78,10 +78,11 @@ public class SimpleEntityManager implements EntityManager {
 						this.currentPrivateIndex = this.currentPrivateIndex.next();
 					} else if (this.space.isServer()) {
 						entity.setID(this.currentIndex);
-						this.currentIndex = this.currentIndex.next();
 						this.sendCreateMessage(currentIndex, type);
+						this.currentIndex = this.currentIndex.next();
 					}
 					entity.setSpace(this.space);
+					this.entities.add(entity);
 					entity.onSpawn();
 				}
 		);
