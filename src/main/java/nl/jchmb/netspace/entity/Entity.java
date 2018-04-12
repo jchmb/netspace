@@ -27,7 +27,7 @@ public interface Entity {
 		}
 		
 		public ID next() {
-			return this.value < 0 ?
+			return this.value > 0 ?
 				new ID(this.value + 1) :
 				new ID(this.value - 1);
 		}

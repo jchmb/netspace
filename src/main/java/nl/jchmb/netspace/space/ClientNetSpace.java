@@ -35,6 +35,8 @@ public class ClientNetSpace extends BaseNetSpace {
 			new EntityUpdateMessageReceiver(this.entities())
 		);
 	}
+	
+	
 
 	@Override
 	public final boolean isServer() {

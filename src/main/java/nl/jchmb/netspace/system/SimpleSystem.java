@@ -10,4 +10,9 @@ public abstract class SimpleSystem implements System {
 	public final Stream<Entity> getEntityStream(final NetSpace space) {
 		return space.entities().stream();
 	}
+	
+	@Override
+	public void onUpdate(final Stream<Entity> entities, final double dt) {
+		entities.forEach(entity -> this.onUpdate(entity, dt));
+	}
 }

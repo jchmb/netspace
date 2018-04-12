@@ -35,10 +35,10 @@ public class SimpleSystemManager implements SystemManager {
 			final double dt
 	) {
 		this.systems.forEach(
-			system -> system.getEntityStream(this.space)
-				.forEach(
-					entity -> system.onUpdate(entity, dt)
-				)
+			system -> system.onUpdate(
+				system.getEntityStream(this.space),
+				dt
+			)
 		);
 	}
 	

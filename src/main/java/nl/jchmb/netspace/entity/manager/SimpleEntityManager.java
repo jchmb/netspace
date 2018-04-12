@@ -3,6 +3,8 @@ package nl.jchmb.netspace.entity.manager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Stream;
 
 import nl.jchmb.netspace.entity.Entity;
@@ -17,8 +19,8 @@ public class SimpleEntityManager implements EntityManager {
 	private final NetSpace space;
 	private final EntityFactory factory;
 	private final List<Entity> entities = new ArrayList<>();
-	private final List<EntityTypePair> entitiesToAdd = new ArrayList<>();
-	private final List<Entity> entitiesToRemove = new ArrayList<>();
+	private final Queue<EntityTypePair> entitiesToAdd = new ConcurrentLinkedQueue<>();
+	private final Queue<Entity> entitiesToRemove = new ConcurrentLinkedQueue<>();
 	private ID currentIndex = new ID(1);
 	private ID currentPrivateIndex = new ID(-1);
 	
@@ -52,7 +54,7 @@ public class SimpleEntityManager implements EntityManager {
 	@Override
 	public Entity spawn(final Entity.Type type) {
 		final Entity entity = this.factory.create(type);
-		this.entitiesToAdd.add(
+		this.entitiesToAdd.offer(
 			new EntityTypePair(
 				entity,
 				type
@@ -68,24 +70,23 @@ public class SimpleEntityManager implements EntityManager {
 
 	@Override
 	public void onUpdate(final double dt) {
-		this.entitiesToAdd.stream()
-			.forEach(
-				pair -> {
-					final Entity.Type type = pair.type;
-					final Entity entity = pair.entity;
-					if (entity.isPrivate()) {
-						entity.setID(this.currentPrivateIndex);
-						this.currentPrivateIndex = this.currentPrivateIndex.next();
-					} else if (this.space.isServer()) {
-						entity.setID(this.currentIndex);
-						this.sendCreateMessage(currentIndex, type);
-						this.currentIndex = this.currentIndex.next();
-					}
-					entity.setSpace(this.space);
-					this.entities.add(entity);
-					entity.onSpawn();
-				}
-		);
+		EntityTypePair pair;
+		while ((pair = this.entitiesToAdd.poll()) != null) {
+						final Entity.Type type = pair.type;
+						final Entity entity = pair.entity;
+						if (entity.isPrivate()) {
+							entity.setID(this.currentPrivateIndex);
+							this.currentPrivateIndex = this.currentPrivateIndex.next();
+						} else if (this.space.isServer()) {
+							entity.setID(this.currentIndex);
+							this.sendCreateMessage(currentIndex, type);
+							this.currentIndex = this.currentIndex.next();
+						}
+						entity.setSpace(this.space);
+						this.entities.add(entity);
+						System.out.println(entity.getClass().getSimpleName() + ":" + entity.getID().value);
+						entity.onSpawn();
+		}
 		this.entities.removeAll(this.entitiesToRemove);
 		this.entitiesToRemove.forEach(
 			entity -> {

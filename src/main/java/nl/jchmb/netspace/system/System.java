@@ -8,4 +8,5 @@ import nl.jchmb.netspace.space.NetSpace;
 public interface System {
 	public Stream<Entity> getEntityStream(final NetSpace space);
 	public void onUpdate(final Entity entity, final double dt);
+	public void onUpdate(final Stream<Entity> entities, final double dt);
 }
